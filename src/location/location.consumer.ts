@@ -33,13 +33,11 @@ export class LocationConsumer extends WorkerHost {
     const outAreaIds = allAreaResults
       .filter((area) => !area.isInArea)
       .map((area) => area.areaId);
-    const promsIn = inAreaIds.map((areaId) => {
-      this.logService.logUserInAreas(data.userId, inAreaIds);
-    });
-    const promsOut = outAreaIds.map((areaId) => {
-      this.logService.logUserOutOfAreas(data.userId, outAreaIds);
-    });
-    await Promise.all([...promsIn, ...promsOut]);
+
+    await Promise.all([
+      this.logService.logUserInAreas(data.userId, inAreaIds),
+      this.logService.logUserOutOfAreas(data.userId, outAreaIds),
+    ]);
     await this.locationService.markSampleProcessed(created.id);
   }
 }

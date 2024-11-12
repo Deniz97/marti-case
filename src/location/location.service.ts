@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Location } from './location.entity';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 
-export type LocationSample = { lat: number; long: number; userId: number };
+export type LocationSample = {
+  lat: number;
+  long: number;
+  userId: number;
+};
 
 @Injectable()
 export class LocationService {

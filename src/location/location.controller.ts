@@ -11,7 +11,7 @@ export class LocationController {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectQueue('location') private locationQueue: Queue,
+    @InjectQueue('location') private locationQueue: Queue<LocationSample>,
   ) {}
 
   @Post()

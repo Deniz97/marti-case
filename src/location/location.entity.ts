@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
 } from 'typeorm';
-import { Geometry, Point } from 'geojson';
+import { Point } from 'geojson';
 
 @Entity()
 export class Location {
