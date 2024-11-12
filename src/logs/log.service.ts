@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { In, IsNull, Repository } from 'typeorm';
 import { Log } from './log.entity';
 
 @Injectable()
@@ -14,31 +14,32 @@ export class LogService {
     return this.logRepository.find();
   }
 
-  async logUserInArea(userId: number, areaId: number): Promise<void> {
-    const lastLogForUserAndArea = await this.logRepository.findOne({
-      where: { userId, areaId, leftTime: IsNull() },
-      order: { entryTime: 'DESC' },
+  async logUserInAreas(userId: number, areaIds: number[]): Promise<void> {
+    const logsForUserAndArea = await this.logRepository.find({
+      where: { userId, areaId: In(areaIds), leftTime: IsNull() },
     });
 
-    if (!lastLogForUserAndArea || lastLogForUserAndArea.leftTime) {
-      await this.logRepository.save({
-        userId,
-        areaId,
-        entryTime: new Date(),
-      });
-    }
+    const newAreaIds = areaIds.filter((areaId) => {
+      return !logsForUserAndArea.some((log) => log.areaId === areaId);
+    });
+    const newAreas = newAreaIds.map((areaId) => ({
+      userId,
+      areaId,
+      entryTime: new Date(),
+    }));
+    await this.logRepository.save(newAreas);
   }
 
-  async logUserOutOfArea(userId: number, areaId: number): Promise<void> {
-    const lastLogForUserAndArea = await this.logRepository.findOne({
-      where: { userId, areaId, leftTime: IsNull() },
-      order: { entryTime: 'DESC' },
-    });
-
-    if (!lastLogForUserAndArea) {
-      return;
-    }
-    lastLogForUserAndArea.leftTime = new Date();
-    await this.logRepository.save(lastLogForUserAndArea);
+  async logUserOutOfAreas(userId: number, areaIds: number[]): Promise<void> {
+    await this.logRepository.update(
+      {
+        userId,
+        areaId: In(areaIds),
+        leftTime: IsNull(),
+      },
+      {
+        leftTime: new Date(),
+      },
+    );
   }
 }
