@@ -6,7 +6,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Geometry, Polygon } from 'geojson';
-import { Log } from 'src/logs/log.entity';
+import { Log } from '../logs/log.entity';
 
 @Entity()
 export class Area {
@@ -19,6 +19,6 @@ export class Area {
   @CreateDateColumn()
   createdAt: Date;
 
-  @OneToMany(() => Log, (log) => log.user)
+  @OneToMany(() => Log, (log) => log.area)
   logs: Log[];
 }

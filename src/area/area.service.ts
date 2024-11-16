@@ -13,8 +13,8 @@ export class AreaService {
   async getAllAreas(): Promise<Area[]> {
     return this.areaRepository.find();
   }
-
-  async createArea(coordinates: [long: number, lat: number][]): Promise<Area> {
+  ƒ;
+  async createArea(coordinates: number[][]): Promise<Area> {
     const area = new Area();
     area.polygon = {
       type: 'Polygon',
